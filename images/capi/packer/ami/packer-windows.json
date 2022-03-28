@@ -154,6 +154,24 @@
       "type": "powershell"
     }
   ],
+  "error-cleanup-provisioner": {
+    "type": "powershell",
+    "inline": [
+      "Write-Output '1------------'",
+      "Get-ChildItem $env:WINDIR\\Panther\\Unattendgc\\ | ForEach-Object {Write-Output \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"; Get-Content \"$env:WINDIR\\Panther\\Unattendgc\\$_\"}",
+
+      "Write-Output \"2------------\"",
+      "Get-ChildItem $env:WINDIR\\System32\\Sysprep\\Panther\\ | ForEach-Object {Write-Output \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"; Get-Content \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"}",
+
+      "Write-Output \"EC2Launch.log\"",
+      "Write-Output \"3------------\"",
+      "Get-Content C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Log\\EC2Launch.log",
+
+      "Write-Output \"4------------\"",
+      "Write-Output \",ROUTE PRINT\"",
+      "route print"
+    ]
+  },
   "variables": {
     "additional_debug_files": null,
     "ami_description": "Cluster API base image designed for {{user `kubernetes_semver`}}",
