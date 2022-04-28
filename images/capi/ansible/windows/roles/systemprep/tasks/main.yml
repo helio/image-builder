@@ -143,6 +143,13 @@
     - Hyper-V-PowerShell
     state: present
   register: win_feature
+  when: "'Server' in ansible_os_name"
+
+- name: Add Containers
+  win_shell: |
+    dism /online /enable-feature /featurename:containers /all /NoRestart
+  when: "not 'Server' in ansible_os_name"
+
 
 # Due to a limitation in some CNI plugins the Hyper-V role needs to be installed in order
 # to use the VMSwitch Powershell Cmdlets.  
