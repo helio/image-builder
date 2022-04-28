@@ -67,7 +67,8 @@
       "winrm_insecure": true,
       "winrm_timeout": "6m",
       "winrm_use_ssl": true,
-      "winrm_username": "Administrator"
+      "winrm_username": "{{ user `winrm_username` }}",
+      "winrm_password": "{{ user `winrm_password` }}"
     }
   ],
   "post-processors": [
@@ -223,6 +224,8 @@
     "vpc_id": "",
     "windows_service_manager": null,
     "windows_updates_kbs": null,
+    "winrm_username": "Administrator",
+    "winrm_password": "",
     "wins_url": "https://github.com/rancher/wins/releases/download/v{{user `wins_version`}}/wins.exe"
   }
 }
