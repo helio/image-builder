@@ -97,7 +97,7 @@
       "playbook_file": "ansible/windows/node_windows.yml",
       "type": "ansible",
       "use_proxy": false,
-      "user": "Administrator"
+      "user": "{{ user `winrm_username` }}"
     },
     {
       "restart_timeout": "10m",
@@ -146,7 +146,7 @@
     },
     {
       "elevated_password": "{{.WinRMPassword}}",
-      "elevated_user": "Administrator",
+      "elevated_user": "{{ user `winrm_username` }}",
       "script": "packer/ami/scripts/sysprep_prerequisites.ps1",
       "type": "powershell"
     },
