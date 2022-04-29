@@ -207,7 +207,7 @@
     "containerd_url": "",
     "containerd_version": null,
     "encrypted": "false",
-    "ena_support": "false",
+    "ena_support": "",
     "sriov_support": "false",
     "iam_instance_profile": "",
     "ib_version": "{{env `IB_VERSION`}}",
