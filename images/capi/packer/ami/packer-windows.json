@@ -10,7 +10,7 @@
       "ami_users": "{{user `ami_users`}}",
       "associate_public_ip_address": true,
       "communicator": "winrm",
-      "disable_stop_instance": true,
+      "disable_stop_instance": false,
       "encrypt_boot": "{{user `encrypted`}}",
       "ena_support": "{{user `ena_support`}}",
       "sriov_support": "{{user `sriov_support`}}",
@@ -152,8 +152,14 @@
     },
     {
       "inline": [
-        "C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1"
+        "cat C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1",
+        "C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1 -NoShutdown",
+        "$foo = $LastExitCode",
+        "echo $LastExitCode",
+        "cat C:/ProgramData/Amazon/EC2-Windows/Launch/Sysprep/Unattend.xml",
+        "exit $foo"
       ],
+      "debug_mode": true,
       "type": "powershell"
     }
   ],
