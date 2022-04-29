@@ -136,19 +136,13 @@
 - name: Expand dynamic port range to 33000-65535 to avoid port exhaustion
   win_shell: netsh int ipv4 set dynamicportrange tcp 33000 32536
 
-- name: Add required Windows Features
-  win_feature:
-    name:
-    - Containers
-    - Hyper-V-PowerShell
-    state: present
-  register: win_feature
-  when: "'Server' in ansible_os_name"
-
 - name: Add Containers
   win_shell: |
     dism /online /enable-feature /featurename:containers /all /NoRestart
-  when: "not 'Server' in ansible_os_name"
+
+- name: Add Hyper-V-Powershell
+  win_shell: |
+    dism /online /enable-feature /featurename:Microsoft-Hyper-V-Management-PowerShell /all /NoRestart
 
 
 # Due to a limitation in some CNI plugins the Hyper-V role needs to be installed in order
