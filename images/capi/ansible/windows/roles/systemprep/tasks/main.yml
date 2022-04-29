@@ -139,11 +139,14 @@
 - name: Add Containers
   win_shell: |
     dism /online /enable-feature /featurename:containers /all /NoRestart
+  register: containers_installed
+  failed_when: containers_installed.rc != 1 and containers_installed.rc != 0
 
 - name: Add Hyper-V-Powershell
   win_shell: |
     dism /online /enable-feature /featurename:Microsoft-Hyper-V-Management-PowerShell /all /NoRestart
-
+  register: hyperv_powershell
+  failed_when: hyperv_powershell.rc != 1 and hyperv_powershell.rc != 0
 
 # Due to a limitation in some CNI plugins the Hyper-V role needs to be installed in order
 # to use the VMSwitch Powershell Cmdlets.  
