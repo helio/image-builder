@@ -148,6 +148,7 @@
       "elevated_password": "{{.WinRMPassword}}",
       "elevated_user": "{{ user `winrm_username` }}",
       "script": "packer/ami/scripts/sysprep_prerequisites.ps1",
+      "debug_mode": true,
       "type": "powershell"
     },
     {
