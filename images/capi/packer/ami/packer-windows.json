@@ -137,8 +137,14 @@
     {
       "elevated_password": "{{.WinRMPassword}}",
       "elevated_user": "{{ user `winrm_username` }}",
-      "script": "packer/ami/scripts/sysprep_prerequisites.ps1",
+      "script": "packer/ami/scripts/sysprep_prerequisites-win10.ps1",
       "type": "powershell"
+    },
+    {
+      "type": "file",
+      "source": "packer/ami/scripts/Unattend-win10.xml",
+      "destination": "C:\\Program Data\\Amazon\\EC2-Windows\\Launch\\Sysprep\\Unattend.xml"
+
     },
     {
       "elevated_password": "{{.WinRMPassword}}",

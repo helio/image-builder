@@ -19,11 +19,3 @@ if( Test-Path $Env:SystemRoot\system32\Sysprep\unattend.xml ) {
 
 # Schedule InitializeInstance to run on next boot
 & $Env:ProgramData\Amazon\EC2-Windows\Launch\Scripts\InitializeInstance.ps1 -Schedule
-
-$unattendedXml = "$ENV:ProgramFiles\Cloudbase Solutions\Cloudbase-Init\conf\Unattend.xml"
-$FileExists = Test-Path $unattendedXml
-If ($FileExists -eq $True) {
-  # Use the Cloudbase-init provided unattend file during install
-  Write-Output "Using cloudbase-init unattend file for sysprep: $unattendedXml"
-  Copy-Item -Force 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init\conf\Unattend.xml' $Env:ProgramData\Amazon\EC2-Windows\Launch\Sysprep\Unattend.xml
-}
