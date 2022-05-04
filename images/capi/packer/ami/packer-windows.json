@@ -141,7 +141,11 @@
       "type": "powershell"
     },
     {
-      "script": "/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1",
+      "elevated_password": "{{.WinRMPassword}}",
+      "elevated_user": "{{ user `winrm_username` }}",
+      "inline": [
+        "C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1"
+      ],
       "type": "powershell"
     }
   ],
