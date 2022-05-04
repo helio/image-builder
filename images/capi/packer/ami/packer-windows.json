@@ -10,7 +10,8 @@
       "ami_users": "{{user `ami_users`}}",
       "associate_public_ip_address": true,
       "communicator": "winrm",
-      "disable_stop_instance": false,
+      "disable_stop_instance": true,
+      "ebs_optimized": true,
       "encrypt_boot": "{{user `encrypted`}}",
       "ena_support": "{{user `ena_support`}}",
       "sriov_support": "{{user `sriov_support`}}",
@@ -69,17 +70,6 @@
       "winrm_use_ssl": true,
       "winrm_username": "{{ user `winrm_username` }}",
       "winrm_password": "{{ user `winrm_password` }}"
-    }
-  ],
-  "post-processors": [
-    {
-      "custom_data": {
-        "containerd_version": "{{user `containerd_version`}}",
-        "kubernetes_cni_version": "{{user `kubernetes_cni_semver`}}",
-        "kubernetes_version": "{{user `kubernetes_semver`}}"
-      },
-      "output": "{{user `manifest_output`}}",
-      "type": "manifest"
     }
   ],
   "provisioners": [
@@ -148,40 +138,13 @@
       "elevated_password": "{{.WinRMPassword}}",
       "elevated_user": "{{ user `winrm_username` }}",
       "script": "packer/ami/scripts/sysprep_prerequisites.ps1",
-      "debug_mode": true,
       "type": "powershell"
     },
     {
-      "inline": [
-        "cat C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1",
-        "C:/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1 -NoShutdown",
-        "$foo = $LastExitCode",
-        "echo $LastExitCode",
-        "cat C:/ProgramData/Amazon/EC2-Windows/Launch/Sysprep/Unattend.xml",
-        "exit $foo"
-      ],
-      "debug_mode": true,
+      "script": "/ProgramData/Amazon/EC2-Windows/Launch/Scripts/SysprepInstance.ps1",
       "type": "powershell"
     }
   ],
-  "error-cleanup-provisioner": {
-    "type": "powershell",
-    "inline": [
-      "Write-Output '1------------'",
-      "Get-ChildItem $env:WINDIR\\Panther\\Unattendgc\\ | ForEach-Object {Write-Output \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"; Get-Content \"$env:WINDIR\\Panther\\Unattendgc\\$_\"}",
-
-      "Write-Output \"2------------\"",
-      "Get-ChildItem $env:WINDIR\\System32\\Sysprep\\Panther\\ | ForEach-Object {Write-Output \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"; Get-Content \"$env:WINDIR\\System32\\Sysprep\\Panther\\$_\"}",
-
-      "Write-Output \"EC2Launch.log\"",
-      "Write-Output \"3------------\"",
-      "Get-Content C:\\ProgramData\\Amazon\\EC2-Windows\\Launch\\Log\\EC2Launch.log",
-
-      "Write-Output \"4------------\"",
-      "Write-Output \",ROUTE PRINT\"",
-      "route print"
-    ]
-  },
   "variables": {
     "additional_debug_files": null,
     "ami_description": "Cluster API base image designed for {{user `kubernetes_semver`}}",
