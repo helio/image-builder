@@ -143,7 +143,17 @@
     {
       "type": "file",
       "source": "packer/ami/scripts/Generalize-win10.xml",
-      "destination": "C:\\Windows\\System32\\Sysprep\\ActionFiles\\Generalize.xml"
+      "destination": "C:\\Generalize.xml"
+    },
+    {
+      "elevated_password": "{{.WinRMPassword}}",
+      "elevated_user": "{{ user `winrm_username` }}",
+      "inline": [
+        "& takeown.exe /f  C:\\Windows\\System32\\Sysprep\\ActionFiles\\Generalize.xml",
+        "Remove-Item -Path C:/Windows/System32/Sysprep/ActionFiles/Generalize.xml",
+        "Copy-Item -Path C:/Generalize.xml -Destination C:/Windows/System32/Sysprep/ActionFiles/ -Force"
+      ],
+      "type": "powershell"
     },
     {
       "type": "file",
