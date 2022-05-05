@@ -142,9 +142,13 @@
     },
     {
       "type": "file",
+      "source": "packer/ami/scripts/Generalize-win10.xml",
+      "destination": "C:\\Windows\\System32\\Sysprep\\ActionFiles\\Generalize.xml"
+    },
+    {
+      "type": "file",
       "source": "packer/ami/scripts/Unattend-win10.xml",
       "destination": "C:\\Program Data\\Amazon\\EC2-Windows\\Launch\\Sysprep\\Unattend.xml"
-
     },
     {
       "elevated_password": "{{.WinRMPassword}}",
