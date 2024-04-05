@@ -50,10 +50,10 @@
       - "{{ programfiles.stdout | trim }}\\containerd"
     scope: machine
 
-- name: Copy containerd config file {{ containerd_config_file }}
+- name: Copy containerd v1.x config file
   ansible.windows.win_template:
     dest: "{{ programfiles.stdout | trim }}\\containerd\\config.toml"
-    src: "{{ containerd_config_file }}"
+    src: "config_v2.toml"
   vars:
     allusersprofile: "{{ alluserprofile.stdout | trim }}"
     plugin_bin_dir: "{{ systemdrive.stdout | trim }}/opt/cni/bin"
@@ -61,6 +61,30 @@
     # programfiles is C:\Program Files, but should be C:\\Program Files
     # otherwise task Register Containerd fails with "invalid escape sequence: \P"
     containerd_conf_dir: '{{ programfiles.stdout | trim | regex_replace("\\", "\\\\") }}\\\\containerd'
+  when: (containerd_version |  version_compare('2','<')) and containerd_config_file is undefined
+
+- name: Copy containerd v2.x config file
+  ansible.windows.win_template:
+    dest: "{{ programfiles.stdout | trim }}\\containerd\\config.toml"
+    src: "config_v3.toml"
+  vars:
+    allusersprofile: "{{ alluserprofile.stdout | trim }}"
+    plugin_bin_dir: "{{ systemdrive.stdout | trim }}/opt/cni/bin"
+    plugin_conf_dir: "{{ systemdrive.stdout | trim }}/etc/cni/net.d"
+    containerd_conf_dir: '{{ programfiles.stdout | trim | regex_replace("\\", "\\\\") }}\\\\containerd'
+  when: (containerd_version |  version_compare('2','>=')) and containerd_config_file is undefined
+
+- name: Copy custom containerd config file {{ containerd_config_file }}
+  ansible.windows.win_template:
+    dest: "{{ programfiles.stdout | trim }}\\containerd\\config.toml"
+    src: "{{ containerd_config_file }}"
+  vars:
+    allusersprofile: "{{ alluserprofile.stdout | trim }}"
+    plugin_bin_dir: "{{ systemdrive.stdout | trim }}/opt/cni/bin"
+    plugin_conf_dir: "{{ systemdrive.stdout | trim }}/etc/cni/net.d"
+    containerd_conf_dir: '{{ programfiles.stdout | trim | regex_replace("\\", "\\\\") }}\\\\containerd'
+  when: containerd_config_file is defined
+
 
 - name: Check if a Containerd service is installed
   ansible.windows.win_service:
