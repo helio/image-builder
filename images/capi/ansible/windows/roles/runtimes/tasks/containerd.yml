@@ -88,6 +88,14 @@
     containerd_conf_dir: '{{ programfiles.stdout | trim | regex_replace("\\", "\\\\") }}\\\\containerd'
   when: containerd_config_file is defined
 
+- name: print containerd config
+  win_shell: |
+    Get-Content "C:\\program files\\containerd\\config.toml"
+  register: containerdconfig
+- name: Debug print containerd config
+  ansible.builtin.debug:
+    var: containerdconfig
+  when: runtime == "containerd"
 
 - name: Check if a Containerd service is installed
   ansible.windows.win_service:
