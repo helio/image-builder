@@ -45,7 +45,6 @@ common_debs: &common_debs
   libnetfilter-acct1:
   libnetfilter-cttimeout1:
   libnetfilter-log1:
-  python3-distutils:
   python3-netifaces:
   python3-pip:
   socat:
@@ -56,7 +55,7 @@ chrony_deb: &chrony_deb
     skip: true
     installed: false
 
-common_mariner_rpms: &common_mariner_rpms
+common_azurelinux_rpms: &common_azurelinux_rpms
   audit:
   ca-certificates:
   cloud-init:
@@ -109,6 +108,8 @@ kubernetes_cni_deb_version: ""
 kubernetes_cni_rpm_version: ""
 # When k8s and k8s cni source is http
 kubernetes_load_additional_imgs: false
+block_nouveau_loading: false
+node_custom_roles_pre: ""
 
 #windows variables
 kubernetes_install_path: ""
@@ -143,34 +144,39 @@ centos:
   amazon:
     package:
       amazon-ssm-agent:
-      <<: *rh7_rpms
+    os_version:
+    - distro_version: "7"
+      package:
+        <<: *rh7_rpms
     command:
-      pip3 list --format=columns | grep 'awscli' | awk -F' ' '{print $1}':
+      /usr/local/sbin/aws --version:
         exit-status: 0
-        stdout: ["awscli"]
         stderr: []
         timeout: 0
   azure:
     package:
       open-vm-tools:
-      azure-cli:
   ova:
     package:
       python2-pip:
       open-vm-tools:
-      <<: *rh7_rpms
+    os_version:
+    - distro_version: "7"
+      package:
+        <<: *rh7_rpms
   qemu:
     package:
       open-vm-tools:
       cloud-init:
       cloud-utils-growpart:
-      python2-pip:
-      <<: *rh7_rpms
-  raw:
-    package:
-      cloud-init:
-      cloud-utils-growpart:
-      python2-pip:
+    os_version:
+    - distro_version: "7"
+      package:
+        python2-pip:
+        <<: *rh7_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
   hcloud:
     package:
       cloud-init:
@@ -235,28 +241,119 @@ photon:
     - distro_version: "5"
       package:
         <<: *photon_5_rpms
-mariner:
-  common-package: *common_mariner_rpms
+azurelinux:
+  common-package: *common_azurelinux_rpms
   azure:
     package:
       open-vm-tools:
-      azure-cli:
+mariner:
+  common-package: *common_azurelinux_rpms
+  azure:
+    package:
+      open-vm-tools:
 rockylinux:
   common-package: *common_rpms
   amazon:
     package:
       amazon-ssm-agent:
-      <<: *rh8_rpms
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
     command:
-      pip3 list --format=columns | grep 'awscli' | awk -F' ' '{print $1}':
+      /usr/local/sbin/aws --version:
         exit-status: 0
-        stdout: [ "awscli" ]
-        stderr: [ ]
+        stderr: []
         timeout: 0
     service:
       amazon-ssm-agent:
         enabled: true
         running: true
+  ova:
+    package:
+      open-vm-tools:
+    os_version:
+    - distro_version: "8"
+      package:
+        python2-pip:
+        <<: *rh8_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
+  qemu:
+    package:
+      open-vm-tools:
+      cloud-init:
+      cloud-utils:
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
+  nutanix:
+    package:
+      cloud-init:
+      iscsi-initiator-utils:
+      nfs-utils:
+      lvm2:
+      xfsprogs:
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
+    service:
+      iscsid:
+        enabled: true
+        running: false
+  hcloud:
+    package:
+      cloud-init:
+      cloud-utils-growpart:
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+rhel:
+  common-package: *common_rpms
+  amazon:
+    package:
+      amazon-ssm-agent:
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+    command:
+      /usr/local/sbin/aws --version:
+        exit-status: 0
+        stderr: []
+        timeout: 0
+    service:
+      amazon-ssm-agent:
+        enabled: true
+        running: true
+  azure:
+    package:
+      open-vm-tools:
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+  gcp:
+    command:
+      find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud':
+        exit-status: 0
+        stdout: ["gcloud"]
+        stderr: []
+        timeout: 0
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
   ova:
     package:
       open-vm-tools:
@@ -276,105 +373,39 @@ rockylinux:
     package:
       open-vm-tools:
       cloud-init:
-      cloud-utils:
-      python3-netifaces:
-      <<: *rh8_rpms
-  raw:
-    package:
-      cloud-init:
-      cloud-utils:
-      python3-netifaces:
-      <<: *rh8_rpms
-  nutanix:
-    package:
-      cloud-init:
-      python3-netifaces:
-      iscsi-initiator-utils:
-      nfs-utils:
-      lvm2:
-      xfsprogs:
-      <<: *rh8_rpms
-    service:
-      iscsid:
-        enabled: true
-        running: false
-  hcloud:
-    package:
-      cloud-init:
       cloud-utils-growpart:
-      python3-netifaces:
-      <<: *rh8_rpms
-rhel:
-  common-package: *common_rpms
-  amazon:
-    package:
-      amazon-ssm-agent:
     os_version:
-      - distro_version: "8"
-        package:
-          <<: *rh8_rpms
-    command:
-      pip3 list --format=columns | grep 'awscli' | awk -F' ' '{print $1}':
-        exit-status: 0
-        stdout: [ "awscli" ]
-        stderr: [ ]
-        timeout: 0
-    service:
-      amazon-ssm-agent:
-        enabled: true
-        running: true
-  azure:
-    package:
-      open-vm-tools:
-      azure-cli:
-    os_version:
-      - distro_version: "8"
-        package:
-          <<: *rh8_rpms
-  gcp:
-    command:
-      find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud':
-        exit-status: 0
-        stdout: ["gcloud"]
-        stderr: []
-        timeout: 0
-    os_version:
-      - distro_version: "8"
-        package:
-          <<: *rh8_rpms
-  ova:
-    package:
-      python2-pip:
-      open-vm-tools:
-    os_version:
-    - distro_version: "7"
-      package:
-        <<: *rh7_rpms
     - distro_version: "8"
       package:
         <<: *rh8_rpms
-  qemu:
-    package:
-      open-vm-tools:
-      cloud-init:
-      cloud-utils-growpart:
-      python2-pip:
-      <<: *rh7_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
   raw:
     package:
       cloud-init:
       cloud-utils-growpart:
-      python2-pip:
-      <<: *rh7_rpms
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
   nutanix:
     package:
       cloud-init:
-      python3-netifaces:
       iscsi-initiator-utils:
       nfs-utils:
       lvm2:
       xfsprogs:
-      <<: *rh8_rpms
+    os_version:
+    - distro_version: "8"
+      package:
+        <<: *rh8_rpms
+    - distro_version: "9"
+      package:
+        <<: *rh9_rpms
     service:
       iscsid:
         enabled: true
@@ -394,11 +425,6 @@ ubuntu:
       running: false
   azure:
     command:
-      pip3 list --format=columns | grep 'azure-cli' | awk -F' ' '{print $1}':
-        exit-status: 0
-        stdout: ["azure-cli"]
-        stderr: []
-        timeout: 0
       iptables -C FORWARD -d 168.63.129.16/32 -p tcp -m tcp --dport 80 -m comment --comment "block traffic to 168.63.129.16 for cve-2021-27075" -j DROP:
         exit-status: 0
         timeout: 0
@@ -431,9 +457,8 @@ ubuntu:
         stdout: ["amazon-ssm-agent"]
         stderr: []
         timeout: 0
-      pip3 list --format=columns | grep 'awscli' | awk -F' ' '{print $1}':
+      /usr/local/sbin/aws --version:
         exit-status: 0
-        stdout: ["awscli"]
         stderr: []
         timeout: 0
   gcp:
@@ -553,8 +578,8 @@ windows:
       - Manual
       - Stopped
     kubelet:
-      expected: 
-      - Automatic 
+      expected:
+      - Automatic
       - "/RequiredServices.+:.+(containerd|docker)/"
     sshd:
       expected:
@@ -564,8 +589,8 @@ windows:
   azure:
     windows-service:
 
-    files: 
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf': 
+    files:
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf':
         exists: true
         filetype: file
         contains:
@@ -580,11 +605,11 @@ windows:
   ova:
     windows-service:
       vmtools:
-        expected: 
-        - Automatic 
+        expected:
+        - Automatic
         - Running
     files:
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf': 
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf':
         exists: true
         filetype: file
         contains:
@@ -599,7 +624,7 @@ windows:
         - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
         - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
         - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf': 
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf':
         exists: true
         filetype: file
         contains:
@@ -608,7 +633,7 @@ windows:
     windows-service:
 
     files:
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf': 
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf':
         exists: true
         filetype: file
         contains:
@@ -623,7 +648,7 @@ windows:
     windows-service:
 
     files:
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf': 
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf':
         exists: true
         filetype: file
         contains:
@@ -637,7 +662,7 @@ windows:
         - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
         - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
         - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf': 
+      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf':
         exists: true
         filetype: file
         contains:

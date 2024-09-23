@@ -4,12 +4,16 @@
 
 tracestate="$(shopt -po xtrace)"
 set +o xtrace
-az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID} >/dev/null 2>&1
+if [[ -n "${AZURE_FEDERATED_TOKEN_FILE:-}" ]]; then
+  az login --service-principal -u "${AZURE_CLIENT_ID}" -t "${AZURE_TENANT_ID}" --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" >/dev/null 2>&1
+else
+  az login --service-principal -u "${AZURE_CLIENT_ID}" -t "${AZURE_TENANT_ID}" -p "${AZURE_CLIENT_SECRET}" >/dev/null 2>&1
+fi
 az account set -s ${AZURE_SUBSCRIPTION_ID} >/dev/null 2>&1
 eval "$tracestate"
 
 export RESOURCE_GROUP_NAME="${RESOURCE_GROUP_NAME:-cluster-api-images}"
-export AZURE_LOCATION="${AZURE_LOCATION:-southcentralus}"
+export AZURE_LOCATION="${AZURE_LOCATION:-northcentralus}"
 if ! az group show -n ${RESOURCE_GROUP_NAME} -o none 2>/dev/null; then
   az group create -n ${RESOURCE_GROUP_NAME} -l ${AZURE_LOCATION} --tags ${TAGS:-}
 fi
@@ -40,7 +44,7 @@ create_image_definition() {
   az sig image-definition create \
     --resource-group ${RESOURCE_GROUP_NAME} \
     --gallery-name ${GALLERY_NAME} \
-    --gallery-image-definition capi-${SIG_SKU:-$1} \
+    --gallery-image-definition ${SIG_IMAGE_DEFINITION:-capi-${SIG_SKU:-$1}} \
     --publisher ${SIG_PUBLISHER:-capz} \
     --offer ${SIG_OFFER:-capz-demo} \
     --sku ${SIG_SKU:-$2} \
@@ -58,11 +62,17 @@ case ${SIG_TARGET} in
   ubuntu-2204)
     create_image_definition ${SIG_TARGET} "22_04-lts" "V1" "Linux"
   ;;
+  ubuntu-2404)
+    create_image_definition ${SIG_TARGET} "24_04-lts" "V1" "Linux"
+  ;;
   centos-7)
     create_image_definition "centos-7" "centos-7" "V1" "Linux"
   ;;
   mariner-2)
     create_image_definition ${SIG_TARGET} "mariner-2" "V1" "Linux"
+  ;;
+  azurelinux-3)
+    create_image_definition ${SIG_TARGET} "azurelinux-3" "V1" "Linux"
   ;;
   rhel-8)
     create_image_definition "rhel-8" "rhel-8" "V1" "Linux"
@@ -100,11 +110,20 @@ case ${SIG_TARGET} in
   ubuntu-2204-cvm)
     create_image_definition ${SIG_TARGET} "22_04-lts-cvm" "V2" "Linux" ${SECURITY_TYPE_CVM_SUPPORTED_FEATURE}
   ;;
+  ubuntu-2404-gen2)
+    create_image_definition ${SIG_TARGET} "24_04-lts-gen2" "V2" "Linux"
+  ;;
+  ubuntu-2404-cvm)
+    create_image_definition ${SIG_TARGET} "24_04-lts-cvm" "V2" "Linux" ${SECURITY_TYPE_CVM_SUPPORTED_FEATURE}
+  ;;
   centos-7-gen2)
     create_image_definition "centos-7-gen2" "centos-7-gen2" "V2" "Linux"
   ;;
   mariner-2-gen2)
     create_image_definition ${SIG_TARGET} "mariner-2-gen2" "V2" "Linux"
+  ;;
+  azurelinux-3-gen2)
+    create_image_definition ${SIG_TARGET} "azurelinux-3-gen2" "V2" "Linux"
   ;;
   flatcar-gen2)
     SKU="flatcar-${FLATCAR_CHANNEL}-${FLATCAR_VERSION}-gen2"

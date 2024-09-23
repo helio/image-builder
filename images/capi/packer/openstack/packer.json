@@ -1,6 +1,7 @@
 {
   "builders": [
     {
+      "availability_zone": "{{user `availability_zone`}}",
       "config_drive": "{{user `attach_config_drive`}}",
       "flavor": "{{user `flavor`}}",
       "floating_ip_network": "{{user `floating_ip_network`}}",
@@ -12,6 +13,12 @@
       "networks": "{{user `networks`}}",
       "security_groups": "{{user `security_groups`}}",
       "source_image": "{{user `source_image`}}",
+      "source_image_filter": {
+        "filters": {
+          "name": "{{user `source_image_filter_name`}}"
+        },
+        "most_recent": true
+      },
       "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
       "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
       "ssh_timeout": "2h",
@@ -19,6 +26,7 @@
       "type": "openstack",
       "use_blockstorage_volume": "{{user `use_blockstorage_volume`}}",
       "use_floating_ip": "{{user `use_floating_ip`}}",
+      "volume_availability_zone": "{{user `volume_availability_zone`}}",
       "volume_size": "{{user `volume_size`}}",
       "volume_type": "{{user `volume_type`}}"
     }
@@ -65,10 +73,14 @@
     },
     {
       "arch": "{{user `goss_arch`}}",
+      "download_path": "{{user `goss_download_path`}}",
       "format": "{{user `goss_format`}}",
       "format_options": "{{user `goss_format_options`}}",
       "goss_file": "{{user `goss_entry_file`}}",
       "inspect": "{{user `goss_inspect_mode`}}",
+      "remote_folder": "{{user `goss_remote_folder`}}",
+      "remote_path": "{{user `goss_remote_path`}}",
+      "skip_install": "{{user `goss_skip_install`}}",
       "tests": [
         "{{user `goss_tests_dir`}}"
       ],
