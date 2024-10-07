@@ -82,7 +82,8 @@
         "image_version": "{{user `sig_image_version`}}",
         "replication_regions": "{{user `replication_regions`}}",
         "resource_group": "{{user `resource_group_name`}}",
-        "storage_account_type": "{{user `storage_account_type`}}"
+        "storage_account_type": "{{user `storage_account_type`}}",
+        "shared_image_gallery_timeout": "3h"
       },
       "subscription_id": "{{user `subscription_id`}}",
       "type": "azure-arm",
