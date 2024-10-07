@@ -263,7 +263,8 @@ COMMON_NODE_VAR_FILES := packer/config/kubernetes.json \
 					packer/config/ansible-args.json \
 					packer/config/goss-args.json \
 					packer/config/common.json \
-					packer/config/additional_components.json
+					packer/config/additional_components.json \
+					packer/config/ecr_credential_provider.json
 
 COMMON_WINDOWS_VAR_FILES :=	packer/config/kubernetes.json \
 					packer/config/windows/kubernetes.json \
@@ -274,7 +275,8 @@ COMMON_WINDOWS_VAR_FILES :=	packer/config/kubernetes.json \
 					packer/config/windows/common.json \
 					packer/config/windows/cloudbase-init.json \
 					packer/config/goss-args.json \
-					packer/config/additional_components.json
+					packer/config/additional_components.json \
+					packer/config/ecr_credential_provider.json
 
 COMMON_POWERVS_VAR_FILES := packer/config/kubernetes.json \
 					packer/config/ppc64le/kubernetes.json \
@@ -282,12 +284,13 @@ COMMON_POWERVS_VAR_FILES := packer/config/kubernetes.json \
 					packer/config/ppc64le/cni.json \
 					packer/config/containerd.json \
 					packer/config/wasm-shims.json \
-                    packer/config/ppc64le/containerd.json \
-                    packer/config/ansible-args.json \
-                    packer/config/goss-args.json \
-                    packer/config/common.json \
-                    packer/config/ppc64le/common.json \
-                    packer/config/additional_components.json
+					packer/config/ppc64le/containerd.json \
+					packer/config/ansible-args.json \
+					packer/config/goss-args.json \
+					packer/config/common.json \
+					packer/config/ppc64le/common.json \
+					packer/config/additional_components.json \
+					packer/config/ecr_credential_provider.json
 
 # Initialize a list of flags to pass to Packer. This includes any existing flags
 # specified by PACKER_FLAGS, as well as prefixing the list with the variable
@@ -643,6 +646,7 @@ build-azure-sig-azurelinux-3: ## Builds Azure Linux 3 Azure managed image in Sha
 build-azure-sig-rhel-8: ## Builds RHEL 8 Azure managed image in Shared Image Gallery
 build-azure-sig-windows-2019-containerd: ## Builds Windows Server 2019 with containerd Azure managed image in Shared Image Gallery
 build-azure-sig-windows-2022-containerd: ## Builds Windows Server 2022 with containerd Azure managed image in Shared Image Gallery
+build-azure-sig-windows-2025-containerd: ## Builds Windows Server 2025 with containerd Azure managed image in Shared Image Gallery
 build-azure-sig-windows-2019-containerd-cvm: ## Builds Windows Server 2019 with containerd CVM Azure managed image in Shared Image Gallery
 build-azure-sig-windows-2022-containerd-cvm: ## Builds Windows Server 2022 with containerd CVM Azure managed image in Shared Image Gallery
 build-azure-vhd-ubuntu-2004: ## Builds Ubuntu 20.04 VHD image for Azure
@@ -872,6 +876,7 @@ validate-azure-sig-ubuntu-2204: ## Validates Ubuntu 22.04 Azure managed image in
 validate-azure-sig-ubuntu-2404: ## Validates Ubuntu 24.04 Azure managed image in Shared Image Gallery Packer config
 validate-azure-sig-windows-2019-containerd: ## Validate Windows Server 2019 with containerd Azure managed image in Shared Image Gallery Packer config
 validate-azure-sig-windows-2022-containerd: ## Validate Windows Server 2022 with containerd Azure managed image in Shared Image Gallery Packer config
+validate-azure-sig-windows-2025-containerd: ## Validate Windows Server 2025 with containerd Azure managed image in Shared Image Gallery Packer config
 validate-azure-sig-windows-annual-containerd: ## Validate Windows Server Annual Channel with containerd Azure managed image in Shared Image Gallery Packer config
 validate-azure-vhd-centos-7: ## Validates CentOS 7 VHD image Azure Packer config
 validate-azure-vhd-mariner-2: ## Validates Azure Linux 2 VHD image Azure Packer config
