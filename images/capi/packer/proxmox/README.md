@@ -12,12 +12,12 @@ To use existing ISO files, set the `ISO_FILE` environment variable to the path o
 For example, to use a local ISO file, set the `ISO_FILE` environment variable like this:
 
 ```
-export ISO_FILE="local:iso/ubuntu-24.04.1-live-server-amd64.iso"
+export ISO_FILE="local:iso/ubuntu-24.04.2-live-server-amd64.iso"
 ```
 
 ## Flatcar for Proxmox
 
-Proxmox support is available on Flatcar from version 4152.
+Proxmox support is available on Flatcar from version `4152`.
 * https://www.flatcar.org/releases#alpha-release
 * https://github.com/coreos/fedora-coreos-tracker/issues/1652
 
@@ -33,10 +33,3 @@ export PROXMOX_NODE="pve1"
 export PROXMOX_ISO_POOL="local"
 export PROXMOX_BRIDGE="vmbr1"
 export PROXMOX_STORAGE_POOL="ceph_pool"
-
-## flatcar version
-export FLATCAR_VERSION=4152.1.0
-export FLATCAR_CHANNEL=beta
-
-export OEM_ID=proxmoxve # make sure to choose OEM_ID=proxmoxve
-```
