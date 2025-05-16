@@ -34,7 +34,7 @@
       "source_ami": "{{user `source_ami`}}",
       "source_ami_filter": {
         "filters": {
-          "architecture": "{{ user `ami_filter_arch` }}",
+          "architecture": "x86_64",
           "name": "{{user `ami_filter_name`}}",
           "root-device-type": "ebs",
           "virtualization-type": "hvm"
@@ -48,7 +48,6 @@
       "subnet_id": "{{ user `subnet_id` }}",
       "tags": {
         "Name": "{{user `build_name`}}",
-        "arch": "{{ user `arch` }}",
         "build_date": "{{isotime}}",
         "build_timestamp": "{{user `build_timestamp`}}",
         "containerd_version": "{{user `containerd_version`}}",
@@ -162,8 +161,9 @@
     "builder_instance_type": "t3.small",
     "containerd_gvisor_runtime": "false",
     "containerd_gvisor_version": "latest",
+    "containerd_service_url": "https://raw.githubusercontent.com/containerd/containerd/refs/tags/v{{user `containerd_version`}}/containerd.service",
     "containerd_sha256": null,
-    "containerd_url": "https://github.com/containerd/containerd/releases/download/v{{user `containerd_version`}}/cri-containerd-cni-{{user `containerd_version`}}-linux-amd64.tar.gz",
+    "containerd_url": "https://github.com/containerd/containerd/releases/download/v{{user `containerd_version`}}/containerd-{{user `containerd_version`}}-linux-amd64.tar.gz",
     "containerd_version": null,
     "crictl_url": "https://github.com/kubernetes-sigs/cri-tools/releases/download/v{{user `crictl_version`}}/crictl-v{{user `crictl_version`}}-linux-amd64.tar.gz",
     "crictl_version": null,
@@ -194,6 +194,9 @@
     "kubernetes_source_type": null,
     "manifest_output": "manifest.json",
     "python_path": "",
+    "runc_sha256": null,
+    "runc_url": "https://github.com/opencontainers/runc/releases/download/v{{user `runc_version`}}/runc.amd64",
+    "runc_version": null,
     "skip_create_ami": "false",
     "skip_profile_validation": "false",
     "snapshot_groups": "all",
