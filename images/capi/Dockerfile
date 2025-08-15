@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.14
+# syntax=docker/dockerfile:1.4
 
 # Copyright 2020 The Kubernetes Authors.
 #
@@ -61,6 +61,7 @@ ENV PACKER_ARGS=''
 ENV PACKER_VAR_FILES=''
 ENV IB_VERSION="${PASSED_IB_VERSION}"
 
-RUN make deps
+RUN --mount=type=secret,id=packer-github-token,env=PACKER_GITHUB_API_TOKEN \
+	make deps
 
 ENTRYPOINT [ "/usr/bin/make" ]
