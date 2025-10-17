@@ -54,7 +54,7 @@
       "image_sku": "{{user `image_sku`}}",
       "image_version": "{{user `image_version`}}",
       "location": "{{user `azure_location`}}",
-      "managed_image_name": "{{user `image_name`}}-{{user `runtime`}}-{{user `build_timestamp`}}",
+      "managed_image_name": "{{user `image_name`}}-{{user `build_timestamp`}}",
       "managed_image_resource_group_name": "{{user `resource_group_name`}}",
       "managed_image_storage_account_type": "{{user `storage_account_type`}}",
       "name": "sig-{{user `build_name`}}",
@@ -78,7 +78,7 @@
       },
       "shared_image_gallery_destination": {
         "gallery_name": "{{user `shared_image_gallery_name`}}",
-        "image_name": "{{user `image_name`}}-{{user `runtime`}}",
+        "image_name": "{{user `image_name`}}",
         "image_version": "{{user `sig_image_version`}}",
         "replication_regions": "{{user `replication_regions`}}",
         "resource_group": "{{user `resource_group_name`}}",
